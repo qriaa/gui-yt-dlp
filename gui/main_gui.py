@@ -24,7 +24,7 @@ class MainGUI(tk.Frame):
         self.menubar.add_cascade(label="File", menu=fileMenu)
     
     def openFolder(self):
-        dirPath = tkinter.filedialog.askdirectory(title="Choose a folder with photos to view", parent=self.parent)
+        dirPath = tkinter.filedialog.askdirectory(title="Choose a video database folder", parent=self.parent)
         #TODO: open videobase folder and handle its exceptions
     
     def quit(self):

@@ -1,6 +1,6 @@
 from pathlib import Path
 import csv
-import yt_dlp
+from logic.youtube_object import YoutubeObject
 
 class VideoBase:
 
@@ -16,9 +16,10 @@ class VideoBase:
     cfgFile = Path(".videobase.csv")
 
     def __init__(self):
-        dirPath = None
-        fileBase = None
-        loadedFolder = False
+        self.dirPath = None
+        self.fileBase = None
+        self.loadedFolder = False
+        self.dlOptions = {}
 
     def openFolder(self, dirPath):
         nonEmptyFolder = False
@@ -27,7 +28,7 @@ class VideoBase:
         if not (dirPath / VideoBase.cfgFile).exists():
             noVideoBase = True
 
-        for child in dirPath.iterdir():
+        for _ in dirPath.iterdir():
             nonEmptyFolder = True
             break
             
@@ -37,12 +38,16 @@ class VideoBase:
             raise VideoBase.newFolderException("Folder has never been a videobase")
 
         self.dirPath = dirPath
+        
+        self.dlOptions["paths"] = {"home": str(self.dirPath), "temp": "."}
 
         with open(dirPath / VideoBase.cfgFile, 'r') as file:
             reader = csv.reader(file)
             self.fileBase = []
             for row in reader:
-                self.fileBase.append(row)
+                if row == []:
+                    continue
+                self.fileBase.append(YoutubeObject.fromRecord(row))
         self.loadedFolder = True
 
 
@@ -50,23 +55,22 @@ class VideoBase:
         self.loadedFolderCheck()
         with open(self.dirPath / VideoBase.cfgFile, 'w') as file:
             writer = csv.writer(file)
-            writer.writerows(self.fileBase)
+            for ytObj in self.fileBase:
+                writer.writerow(ytObj.toRecord())
 
 
     def createVideoBaseFile(self, dirPath):
         (dirPath / VideoBase.cfgFile).touch()
 
 
-    def createRecord(self, fileName, title, vidAudio, tags):
+    def addYtObject(self, ytObj):
         self.loadedFolderCheck()
-        record = [fileName, title, vidAudio]
-        for tag in tags:
-            record.append(tag)
-
-        self.fileBase.append(record)
+        self.fileBase.append(ytObj)
         pass
-
-
+    
+    def downloadYtObject(self, index):
+        self.loadedFolderCheck()
+        self.fileBase[index].download(self.dlOptions)
 
     def loadedFolderCheck(self):
         if not self.loadedFolder:

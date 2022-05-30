@@ -3,11 +3,11 @@ import yt_dlp
 
 class YoutubeObject():
     def __init__(self):
-        self.URL = None
-        self.fileName = None
-        self.title = None
         self.id = None
-        self.vidAudio = None
+        self.title = None
+        self.vidAudio = "video"
+        self.fileName = None
+        self.URL = None
         self.tags = []
         self.info = None
     
@@ -24,6 +24,12 @@ class YoutubeObject():
             ytObj.tags.append(tag)
         return ytObj
 
+    def toRecord(self):
+        record = [self.id, self.title, self.vidAudio, self.fileName, self.URL]
+        for tag in self.tags:
+            record.append(tag)
+        return record
+
     def getInfo(self, URL):
         self.URL = URL
         with yt_dlp.YoutubeDL() as ydl:
@@ -32,12 +38,15 @@ class YoutubeObject():
         self.id = self.info["id"]
         self.fileName = f"{self.title} [{self.id}]"
     
+    def setVidAudio(self, vidAudio):
+        vidAudio = vidAudio.lower()
+        if not (vidAudio == "video" or vidAudio == "audio"):
+            return
+        self.vidAudio = vidAudio
 
-    def download(self):
-        with yt_dlp.YoutubeDL() as ydl:
+    def download(self, options):
+        if self.vidAudio == "audio":
+            options["postprocessors"] = [{"key": "FFmpegExtractAudio", "preferredcodec": "m4a"}]
+        with yt_dlp.YoutubeDL(options) as ydl:
             ydl.download(self.URL)
     
-    def toRecord(self):
-        record = [self.id, self.title, self.vidAudio, self.fileName, self.URL]
-        for tag in self.tags:
-            record.append(tag)
