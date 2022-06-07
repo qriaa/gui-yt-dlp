@@ -36,7 +36,7 @@ class YoutubeObject():
             self.info = ydl.extract_info(URL, download=False)
         self.title = self.info["title"]
         self.id = self.info["id"]
-        self.fileName = f"{self.title} [{self.id}]"
+        self.fileName = f"{self.title} [{self.id}][{self.vidAudio}].mp4"
     
     def setVidAudio(self, vidAudio):
         vidAudio = vidAudio.lower()
@@ -44,9 +44,5 @@ class YoutubeObject():
             return
         self.vidAudio = vidAudio
 
-    def download(self, options):
-        if self.vidAudio == "audio":
-            options["postprocessors"] = [{"key": "FFmpegExtractAudio", "preferredcodec": "m4a"}]
-        with yt_dlp.YoutubeDL(options) as ydl:
-            ydl.download(self.URL)
+    
     

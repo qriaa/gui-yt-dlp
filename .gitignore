@@ -1,5 +1,7 @@
 # Test folder
 test/
+# VsCode file
+*.code-workspace
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
