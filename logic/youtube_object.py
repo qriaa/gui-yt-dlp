@@ -1,5 +1,7 @@
 import yt_dlp
-
+import threading
+from logic.info_thread import InfoThread
+from logic.yt_thread import ytThread
 
 class YoutubeObject():
     def __init__(self):
@@ -9,7 +11,12 @@ class YoutubeObject():
         self.fileName = None
         self.URL = None
         self.tags = []
+
+        self.infoLock = threading.Lock()
         self.info = None
+        self.infoThread = None
+
+        self.dlThread = None
     
     @classmethod
     def fromRecord(cls, record):
@@ -30,14 +37,25 @@ class YoutubeObject():
             record.append(tag)
         return record
 
-    def getInfo(self, URL):
+    def download(self, options):
+        #TODO: check if already downloading or already downloaded
+        self.dlThread = ytThread(self.URL, options, self.vidAudio)
+        self.dlThread.start()
+        
+
+    def dlInfo(self, URL):
+        #TODO: check if already downloading
         self.URL = URL
-        with yt_dlp.YoutubeDL() as ydl:
-            self.info = ydl.extract_info(URL, download=False)
-        self.title = self.info["title"]
-        self.id = self.info["id"]
-        self.fileName = f"{self.title} [{self.id}][{self.vidAudio}].mp4"
-    
+        self.infoThread = InfoThread(self, URL)
+        self.infoThread.start()
+        
+    def setInfo(self, info):
+        with self.infoLock:
+            self.info = info
+            self.title = self.info["title"]
+            self.id = self.info["id"]
+            self.fileName = f"{self.title} [{self.id}][{self.vidAudio}].mp4"
+
     def setVidAudio(self, vidAudio):
         vidAudio = vidAudio.lower()
         if not (vidAudio == "video" or vidAudio == "audio"):

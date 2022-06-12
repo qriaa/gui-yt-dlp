@@ -19,15 +19,9 @@ class VideoBase:
 
     def __init__(self):
         self.dirPath = None
-        self.fileBase = None
+        self.ytObjects = None
         self.loadedFolder = False
         self.dlOptions = {}
-
-        self.dlThreads = []
-        self.dlSemaphore = threading.Semaphore()
-        self.infoThreads = []
-        self.infoSemaphore = threading.Semaphore()
-
 
     def openFolder(self, dirPath):
         nonEmptyFolder = False
@@ -53,20 +47,22 @@ class VideoBase:
 
         with open(dirPath / VideoBase.cfgFile, 'r') as file:
             reader = csv.reader(file)
-            self.fileBase = []
+            self.ytObjects = []
             for row in reader:
                 if row == []:
                     continue
-                self.fileBase.append(YoutubeObject.fromRecord(row))
+                self.ytObjects.append(YoutubeObject.fromRecord(row))
         self.loadedFolder = True
 
 
     def saveFolder(self):
         self.loadedFolderCheck()
+        for ytObj in self.ytObjects:
+            ytObj.infoThread.join()
         with open(self.dirPath / VideoBase.cfgFile, 'w', newline='') as file:
             file.truncate()
             writer = csv.writer(file)
-            for ytObj in self.fileBase:
+            for ytObj in self.ytObjects:
                 writer.writerow(ytObj.toRecord())
 
 
@@ -77,21 +73,16 @@ class VideoBase:
     def addYtObject(self, ytObj):
         self.loadedFolderCheck()
         if self.getYtObject(ytObj.id, ytObj.vidAudio) == None:
-            self.fileBase.append(ytObj)
+            self.ytObjects.append(ytObj)
         pass
     
     def downloadYtObject(self, index):
         self.loadedFolderCheck()
-        ytObj = self.fileBase[index]
-        with self.dlSemaphore:
-            thread = ytThread(ytObj.URL, self.dlOptions, ytObj.vidAudio)
-            self.dlThreads.append(thread)
-        thread.start()
-        with self.dlSemaphore:
-            self.dlThreads.remove(thread)
+        ytObj = self.ytObjects[index]
+        ytObj.download(self.dlOptions)
 
     def getYtObject(self, id, vidAudio):
-        for i, ytobj in enumerate(self.fileBase):
+        for i, ytobj in enumerate(self.ytObjects):
             if ytobj.id == id and ytobj.vidAudio == vidAudio:
                 return i
         return None
