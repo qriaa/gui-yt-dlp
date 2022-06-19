@@ -1,7 +1,5 @@
 from pathlib import Path
-import threading
 import csv
-from logic.yt_thread import ytThread
 from logic.youtube_object import YoutubeObject
 
 class VideoBase:
@@ -58,7 +56,8 @@ class VideoBase:
     def saveFolder(self):
         self.loadedFolderCheck()
         for ytObj in self.ytObjects:
-            ytObj.infoThread.join()
+            if ytObj.infoThread != None:
+                ytObj.infoThread.join()
         with open(self.dirPath / VideoBase.cfgFile, 'w', newline='') as file:
             file.truncate()
             writer = csv.writer(file)
@@ -72,6 +71,7 @@ class VideoBase:
 
     def addYtObject(self, ytObj):
         self.loadedFolderCheck()
+        ytObj.infoThread.join()
         if self.getYtObject(ytObj.id, ytObj.vidAudio) == None:
             self.ytObjects.append(ytObj)
         pass

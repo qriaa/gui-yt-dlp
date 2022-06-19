@@ -1,4 +1,3 @@
-import yt_dlp
 import threading
 from logic.info_thread import InfoThread
 from logic.yt_thread import ytThread

@@ -1,6 +1,7 @@
 import threading
 import yt_dlp
 import copy
+
 class ytThread(threading.Thread):
     def __init__(self, URL, options, vidAudio):
         threading.Thread.__init__(self)

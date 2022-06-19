@@ -1,14 +1,25 @@
+from pathlib import Path
 import tkinter as tk
 import tkinter.messagebox
+import tkinter.filedialog
+from gui.toolbar import Toolbar
+
+import logic.video_base
 
 class MainGUI(tk.Frame):
-    def __init__(self, parent):
+    def __init__(self, parent, vbase):
         tk.Frame.__init__(self, parent)
+        self.videoBase = vbase
         self.parent = parent
         self.geometry = "1000x500+100+100"
         self.parent.geometry(self.geometry)
         self.pack(fill="both", expand=True)
         self.parent.protocol("WM_DELETE_WINDOW", self.quit)
+
+        self.createMenu()
+
+        self.toolbar = Toolbar(self)
+        self.toolbar.pack(side=tk.TOP, fill="x")
         pass
 
     def createMenu(self):
@@ -25,11 +36,23 @@ class MainGUI(tk.Frame):
     
     def openFolder(self):
         dirPath = tkinter.filedialog.askdirectory(title="Choose a video database folder", parent=self.parent)
-        #TODO: open videobase folder and handle its exceptions
-    
+        try:
+            self.videoBase.openFolder(Path(dirPath))
+        except logic.video_base.VideoBase.newFolderException:
+            reply = tkinter.messagebox.askyesno(title="New folder initialisation", message="This folder has never been a video library. Do you want to make it one?")
+            if reply:
+                self.videoBase.createVideoBaseFile(Path(dirPath))
+                self.videoBase.openFolder(Path(dirPath))
+        except logic.video_base.VideoBase.nonEmptyDir:
+            reply = tkinter.messagebox.askyesno(title="New folder initialisation", message="This folder has never been a video library and has some files present. Do you want to make it a library?")
+            if reply:
+                self.videoBase.createVideoBaseFile(Path(dirPath))
+                self.videoBase.openFolder(Path(dirPath))
+
     def quit(self):
         reply = tkinter.messagebox.askyesno("Quitting...", "Are you sure you want to quit?", parent=self.parent)
         if reply:
-            #TODO: save and quit
+            if self.videoBase.loadedFolder:
+                self.videoBase.saveFolder()
             self.parent.destroy()
             pass

@@ -1,20 +1,14 @@
 from pathlib import Path
+import tkinter as tk
+from gui.main_gui import MainGUI
 from logic.video_base import VideoBase
 from logic.youtube_object import YoutubeObject
 
 
 if __name__ == "__main__":
+    root = tk.Tk()
+    root.title("gui-yt-dlp")
     vbase = VideoBase()
-    vbase.openFolder(Path("test"))
-    ytobj = YoutubeObject()
-    ytobj.dlInfo("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
-    ytobj.setVidAudio("video")
-    ytobj2 = YoutubeObject()
-    ytobj2.dlInfo("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
-    ytobj2.setVidAudio("audio")
-    vbase.addYtObject(ytobj)
-    vbase.addYtObject(ytobj2)
-    vbase.downloadYtObject(vbase.getYtObject(ytobj.id, ytobj.vidAudio))
-    vbase.downloadYtObject(vbase.getYtObject(ytobj2.id, ytobj2.vidAudio))
-    vbase.saveFolder()
+    app = MainGUI(root, vbase)
+    app.mainloop()
     pass
