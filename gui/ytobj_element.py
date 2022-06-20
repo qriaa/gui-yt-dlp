@@ -14,12 +14,25 @@ class YtObjElement(tk.Frame):
         self.vidAudioIcon = tk.PhotoImage(file=icon)
         self.vidAudioLabel = tk.Label(self, image=self.vidAudioIcon)
         self.idLabel = tk.Label(self, text=self.ytObj.id)
-        self.status = ttk.Progressbar(self, mode="determinate")
+
+        self.dlProgress = tk.Variable(self, 0, name=f"dlp{self.ytObj.id}{self.ytObj.vidAudio}")
+        self.status = ttk.Progressbar(self, mode="determinate", variable=self.dlProgress)
+
+        self.statusTextVar = tk.StringVar(self, value="",
+                                            name=f"stv{self.ytObj.id}{self.ytObj.vidAudio}")
+        self.statusLabel = tk.Label(self, textvariable=self.statusTextVar)
+
+        if (self.parent.videoBase.dirPath / self.ytObj.fileName).exists():
+            self.statusTextVar.set("Downloaded")
+            self.dlProgress.set(100)
+        else:
+            self.statusTextVar.set("Not downloaded")
 
         self.titleLabel.grid(row=0, column=0)
         self.vidAudioLabel.grid(row=0, column=1)
         self.idLabel.grid(row=0, column=2)
         self.status.grid(row=0, column=3)
+        self.statusLabel.grid(row=0, column=4, sticky=tk.NSEW)
 
         self.popupMenu = tk.Menu(self, tearoff=0)
         self.popupMenu.add_command(label="Download", command=self.download)
@@ -29,7 +42,6 @@ class YtObjElement(tk.Frame):
         self.bindTags(self.vidAudioLabel)
         self.bindTags(self.idLabel)
         self.bindTags(self.status)
-
 
     
     def bindTags(self, widget):
@@ -55,5 +67,14 @@ class YtObjElement(tk.Frame):
             self.popupMenu.grab_release()
 
     def download(self):
-        self.parent.videoBase.downloadYtObject(self.parent.videoBase.getYtObjectIndex(self.ytObj))
-        self.progressVariable = tk.Variable(self, value=0)
+        additionalOptions = {"progress_hooks": [self.dlHook]}
+        self.parent.videoBase.downloadYtObjectOptions(self.parent.videoBase.getYtObjectIndex(self.ytObj), additionalOptions)
+    
+    def dlHook(self, d):
+        if d["status"] == "downloading":
+            self.statusTextVar.set("Downloading...")
+            percentage = d["downloaded_bytes"] / d["total_bytes"] * 100
+            self.dlProgress.set(percentage)
+        if d["status"] == "finished":
+            self.statusTextVar.set("Downloaded")
+            self.dlProgress.set(100)

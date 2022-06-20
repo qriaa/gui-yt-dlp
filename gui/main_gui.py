@@ -22,8 +22,6 @@ class MainGUI(tk.Frame):
         self.toolbar = Toolbar(self)
         self.toolbar.pack(side=tk.TOP, fill="x")
 
-        self.openFolder()
-
         self.workWindow = WorkWindow(self)
         self.workWindow.pack(fill="both",expand=True)
         pass
@@ -44,16 +42,19 @@ class MainGUI(tk.Frame):
         dirPath = tkinter.filedialog.askdirectory(title="Choose a video database folder", parent=self.parent)
         try:
             self.videoBase.openFolder(Path(dirPath))
+            self.workWindow.onOpenFolder()
         except logic.video_base.VideoBase.newFolderException:
             reply = tkinter.messagebox.askyesno(title="New folder initialisation", message="This folder has never been a video library. Do you want to make it one?")
             if reply:
                 self.videoBase.createVideoBaseFile(Path(dirPath))
                 self.videoBase.openFolder(Path(dirPath))
+                self.workWindow.onOpenFolder()
         except logic.video_base.VideoBase.nonEmptyDir:
             reply = tkinter.messagebox.askyesno(title="New folder initialisation", message="This folder has never been a video library and has some files present. Do you want to make it a library?")
             if reply:
                 self.videoBase.createVideoBaseFile(Path(dirPath))
                 self.videoBase.openFolder(Path(dirPath))
+                self.workWindow.onOpenFolder()
 
     def quit(self):
         reply = tkinter.messagebox.askyesno("Quitting...", "Are you sure you want to quit?", parent=self.parent)

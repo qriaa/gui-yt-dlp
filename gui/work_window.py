@@ -11,4 +11,6 @@ class WorkWindow(tk.Frame):
 
         self.vidList = VidList(self)
         self.vidList.pack(fill="both", expand=True)
+
+    def onOpenFolder(self):
         self.vidList.showList()

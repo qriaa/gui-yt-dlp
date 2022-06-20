@@ -13,13 +13,20 @@ class VidList(tk.Frame):
 
         self.currObjList = []
         self.topElementIndex = 0
+        self.bind("<MouseWheel>", self.scroll)
 
 
-    def scrollUp(self):
+    def scroll(self,e):
+        if e.delta < 0:
+            if self.topElementIndex + 1 < len(self.videoBase.ytObjects):
+                self.topElementIndex += 1
+                self.showList()
+        else:
+            if self.topElementIndex - 1 >= 0:
+                self.topElementIndex -= 1
+                self.showList()
         pass
 
-    def scrollDown(self):
-        pass
 
     def showList(self):
         for child in self.winfo_children():
@@ -29,7 +36,6 @@ class VidList(tk.Frame):
 
         for i, rng in enumerate(range(self.topElementIndex, upperRange)):
             ytElem = YtObjElement(self, self.videoBase.ytObjects[rng])
-            ytElem.grid(row=i, column=0)
+            ytElem.grid(row=i, column=0, sticky=tk.NSEW)
             self.currObjList = []
             self.currObjList.append(ytElem)
-            

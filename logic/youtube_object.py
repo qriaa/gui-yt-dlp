@@ -45,7 +45,6 @@ class YoutubeObject():
 
     def download(self, options):
         #TODO: check if already downloading or already downloaded
-        options["progress_hooks": self.dlHook]
         self.dlThread = ytThread(self.URL, options, self.vidAudio)
         self.dlThread.start()
         
@@ -68,6 +67,3 @@ class YoutubeObject():
         if not (vidAudio == "video" or vidAudio == "audio"):
             return
         self.vidAudio = vidAudio
-
-    
-    

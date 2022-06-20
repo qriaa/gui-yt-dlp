@@ -1,3 +1,4 @@
+from copy import copy
 import subprocess
 from pathlib import Path
 import csv
@@ -81,6 +82,13 @@ class VideoBase:
         self.loadedFolderCheck()
         ytObj = self.ytObjects[index]
         ytObj.download(self.dlOptions)
+    
+    def downloadYtObjectOptions(self, index, options):
+        self.loadedFolderCheck()
+        ytObj = self.ytObjects[index]
+        optcopy = copy(self.dlOptions)
+        optcopy.update(options)
+        ytObj.download(optcopy)
 
     def getYtObject(self, id, vidAudio):
         for i, ytobj in enumerate(self.ytObjects):
