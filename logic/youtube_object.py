@@ -16,7 +16,14 @@ class YoutubeObject():
         self.infoThread = None
 
         self.dlThread = None
+        self.dlProgress = 0
+        self.dlSize = 0
     
+    def dlHook(self, d):
+        if d["status"] == "downloading":
+            self.dlSize = d["total_bytes"]
+            self.dlProgress = d["downloaded_bytes"]
+
     @classmethod
     def fromRecord(cls, record):
         ytObj = YoutubeObject()
@@ -38,6 +45,7 @@ class YoutubeObject():
 
     def download(self, options):
         #TODO: check if already downloading or already downloaded
+        options["progress_hooks": self.dlHook]
         self.dlThread = ytThread(self.URL, options, self.vidAudio)
         self.dlThread.start()
         

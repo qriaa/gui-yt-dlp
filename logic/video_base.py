@@ -1,3 +1,4 @@
+import subprocess
 from pathlib import Path
 import csv
 from logic.youtube_object import YoutubeObject
@@ -86,9 +87,19 @@ class VideoBase:
             if ytobj.id == id and ytobj.vidAudio == vidAudio:
                 return i
         return None
+    
+    def getYtObjectIndex(self, ytObj):
+        for i, ytobj in enumerate(self.ytObjects):
+            if ytobj.id == ytObj.id and ytobj.vidAudio == ytObj.vidAudio:
+                return i
+        return None
+
+    def showFileInExplorer(self, ytObj):
+        subprocess.Popen(f"explorer /select, \"{self.dirPath / self.ytObjects[self.getYtObjectIndex(ytObj)].fileName}\"")
 
     def loadedFolderCheck(self):
         if not self.loadedFolder:
             raise VideoBase.folderNotLoaded()
+
 
     pass

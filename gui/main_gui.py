@@ -3,6 +3,7 @@ import tkinter as tk
 import tkinter.messagebox
 import tkinter.filedialog
 from gui.toolbar import Toolbar
+from gui.work_window import WorkWindow
 
 import logic.video_base
 
@@ -20,6 +21,11 @@ class MainGUI(tk.Frame):
 
         self.toolbar = Toolbar(self)
         self.toolbar.pack(side=tk.TOP, fill="x")
+
+        self.openFolder()
+
+        self.workWindow = WorkWindow(self)
+        self.workWindow.pack(fill="both",expand=True)
         pass
 
     def createMenu(self):
