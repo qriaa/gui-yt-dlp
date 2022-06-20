@@ -42,6 +42,7 @@ class YtObjElement(tk.Frame):
         self.bindTags(self.vidAudioLabel)
         self.bindTags(self.idLabel)
         self.bindTags(self.status)
+        self.bindTags(self.statusLabel)
 
     
     def bindTags(self, widget):
@@ -54,7 +55,7 @@ class YtObjElement(tk.Frame):
         widget.bind("<Double-Button-1>", self.openFolder)
         widget.bind("<3>", self.popup)
 
-    def selectRow(self):
+    def selectRow(self, e):
         print(f"halo {self.ytObj.id}")
     
     def openFolder(self, e):

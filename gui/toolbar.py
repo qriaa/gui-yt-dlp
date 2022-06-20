@@ -23,4 +23,7 @@ class Toolbar(tk.Frame):
             print(err)
     
     def addVideo(self):
-        pass
+        videoBase = self.master.videoBase
+        if not videoBase.loadedFolder:
+            tkinter.messagebox.showwarning("Folder not loaded", "No folder is loaded. Load a folder first.")
+            return
