@@ -1,0 +1,1 @@
+pdoc -d restructuredtext gui-yt-dlp.py ./gui/ ./logic/ -o ./docs/

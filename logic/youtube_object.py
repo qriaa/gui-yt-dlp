@@ -3,6 +3,8 @@ from logic.info_thread import InfoThread
 from logic.yt_thread import ytThread
 
 class YoutubeObject():
+    """This class manages a video. It holds information about the video and is tasked with beginning
+    the download of information about the video or the video itself."""
     def __init__(self):
         self.id = None
         self.title = None

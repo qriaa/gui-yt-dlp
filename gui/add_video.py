@@ -5,6 +5,8 @@ from tkinter import messagebox
 from logic.youtube_object import YoutubeObject
 
 class AddWindow(tk.Toplevel):
+    """This class is a prompt for the user to input their desired new entry in the video base.
+    It requires the user to provide a link to a youtube video and choose his desired form of download."""
     def __init__(self, parent, videoBase):
         tk.Toplevel.__init__(self, parent)
         self.resizable(False, False)

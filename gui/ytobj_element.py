@@ -4,6 +4,8 @@ import tkinter as tk
 from tkinter import ttk
 
 class YtObjElement(tk.Frame):
+    """This class manages a single graphical representation of a youtube video.
+    It shows the download progress, the title and ID of the video and whether it's an audio or video file."""
     def __init__(self, parent, ytObj):
         tk.Frame.__init__(self, parent)
         self.parent = parent

@@ -3,6 +3,7 @@ import yt_dlp
 import copy
 
 class ytThread(threading.Thread):
+    """This class is a thread which downloads videos."""
     def __init__(self, URL, options, vidAudio):
         threading.Thread.__init__(self)
         self.URL = URL

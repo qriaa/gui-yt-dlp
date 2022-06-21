@@ -6,7 +6,8 @@ import csv
 from logic.youtube_object import YoutubeObject
 
 class VideoBase:
-
+    """This class manages the video database. It saves them,
+    loads folders and creates new database folders."""
     class folderNotLoaded(Exception):
         pass
 

@@ -8,6 +8,7 @@ from gui.work_window import WorkWindow
 import logic.video_base
 
 class MainGUI(tk.Frame):
+    """This class manages the GUI - organizes the placement of the toolbar and the workspace. Also implements the menu which can load a folder."""
     def __init__(self, parent, vbase):
         tk.Frame.__init__(self, parent)
         self.videoBase = vbase

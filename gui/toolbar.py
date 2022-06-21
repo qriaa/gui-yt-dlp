@@ -4,6 +4,7 @@ import tkinter.messagebox
 from gui.add_video import AddWindow
 
 class Toolbar(tk.Frame):
+    """This class manages the toolbar - it is possible to add new buttons easily - right now it contains the 'add video' button"""
     def __init__(self, master):
         tk.Frame.__init__(self, master)
         self.parent = master

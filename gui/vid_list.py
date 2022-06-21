@@ -3,7 +3,7 @@ import tkinter as tk
 from gui.ytobj_element import YtObjElement
 
 class VidList(tk.Frame):
-
+    """This class shows YtObjElements in a list. It's job is to allow for scrolling through the list of movies and organise everything."""
     maxShownElements = 10
 
     def __init__(self, parent):
