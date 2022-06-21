@@ -10,7 +10,7 @@ class Toolbar(tk.Frame):
         self.parent = master
         self.toolbarImages = []
         self.buttons = []
-        for image, command in (("images/add.png", self.addVideo),):
+        for image, command in (("images\\add.png", self.addVideo),):
             self.addButton(image, command)
 
     def addButton(self, image, command):
