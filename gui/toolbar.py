@@ -1,6 +1,7 @@
 import os
 import tkinter as tk
 import tkinter.messagebox
+from gui.add_video import AddWindow
 
 class Toolbar(tk.Frame):
     def __init__(self, master):
@@ -27,3 +28,4 @@ class Toolbar(tk.Frame):
         if not videoBase.loadedFolder:
             tkinter.messagebox.showwarning("Folder not loaded", "No folder is loaded. Load a folder first.")
             return
+        self.addVideoWindow = AddWindow(self.parent, self.parent.videoBase)

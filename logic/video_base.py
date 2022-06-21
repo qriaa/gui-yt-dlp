@@ -1,3 +1,4 @@
+import os
 from copy import copy
 import subprocess
 from pathlib import Path
@@ -24,6 +25,8 @@ class VideoBase:
         self.dlOptions = {}
 
     def openFolder(self, dirPath):
+        if self.loadedFolder:
+            self.saveFolder()
         nonEmptyFolder = False
         noVideoBase = False
 
@@ -78,6 +81,15 @@ class VideoBase:
             self.ytObjects.append(ytObj)
         pass
     
+    def removeYtObject(self, ytObj):
+        self.loadedFolderCheck()
+        index = self.getYtObjectIndex(ytObj)
+        if index == None:
+            return
+        if (self.dirPath / self.ytObjects[index].fileName).exists():
+            os.remove(self.dirPath / self.ytObjects[index].fileName)
+        self.ytObjects.pop(index)
+
     def downloadYtObject(self, index):
         self.loadedFolderCheck()
         ytObj = self.ytObjects[index]

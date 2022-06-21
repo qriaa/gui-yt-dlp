@@ -36,6 +36,7 @@ class YtObjElement(tk.Frame):
 
         self.popupMenu = tk.Menu(self, tearoff=0)
         self.popupMenu.add_command(label="Download", command=self.download)
+        self.popupMenu.add_command(label="Delete", command=self.delete)
 
 
         self.bindTags(self.titleLabel)
@@ -71,6 +72,10 @@ class YtObjElement(tk.Frame):
         additionalOptions = {"progress_hooks": [self.dlHook]}
         self.parent.videoBase.downloadYtObjectOptions(self.parent.videoBase.getYtObjectIndex(self.ytObj), additionalOptions)
     
+    def delete(self):
+        self.parent.videoBase.removeYtObject(self.ytObj)
+        self.parent.showList()
+
     def dlHook(self, d):
         if d["status"] == "downloading":
             self.statusTextVar.set("Downloading...")

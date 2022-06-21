@@ -44,13 +44,15 @@ class YoutubeObject():
         return record
 
     def download(self, options):
-        #TODO: check if already downloading or already downloaded
+        if self.dlThread != None and self.dlThread.is_alive():
+            return
         self.dlThread = ytThread(self.URL, options, self.vidAudio)
         self.dlThread.start()
         
 
     def dlInfo(self, URL):
-        #TODO: check if already downloading
+        if self.infoThread != None and self.infoThread.is_alive():
+            return
         self.URL = URL
         self.infoThread = InfoThread(self, URL)
         self.infoThread.start()
@@ -60,7 +62,10 @@ class YoutubeObject():
             self.info = info
             self.title = self.info["title"]
             self.id = self.info["id"]
-            self.fileName = f"{self.title} [{self.id}][{self.vidAudio}].mp4"
+            ext = "mp4"
+            if self.vidAudio == "audio":
+                ext = "mp3"
+            self.fileName = f"{self.title} [{self.id}][{self.vidAudio}].{ext}"
 
     def setVidAudio(self, vidAudio):
         vidAudio = vidAudio.lower()
